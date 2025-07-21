@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Material & Quill Editor</title>
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Limelight&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+  <script type="importmap">
+    {
+      "imports": {
+        "@material/web/": "https://esm.run/@material/web/"
+      }
+    }
+  </script>
+  <script type="module">
+    import '@material/web/all.js';
+    import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
+
+    document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+  </script>
+    <style>
+      * {
+        font-family: "Lato", sans-serif;
+      }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            padding: 2rem;
+            background-color: #f0f2f5;
+          font-weight: 400;
+        }
+        md-card {
+            max-width: 800px;
+            margin: auto;
+            padding: 2rem;
+        }
+        md-filled-text-field, #editor {
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+        #editor {
+            height: 300px;
+          font-family: "Lato", sans-serif;
+        }
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+<body>
+  <h1>Codingshard Article Maker</h1>
+    <md-card>
+        <div id="editor"></div>
+        <div class="buttons">
+            <md-outlined-button id = "publishButton">Publish Article</md-outlined-button>
+        </div>
+    </md-card>
+
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+
+    <script>
+        // Initialize Quill editor
+        const quill = new Quill('#editor', {
+            theme: 'snow'
+        });
+
+        // 1. Get a reference to the publish button using its new ID
+        const publishButton = document.getElementById('publishButton');
+
+        // 2. Add an event listener for the 'click' event
+        publishButton.addEventListener('click', async () => {
+            // 3. Get the HTML content from the Quill editor
+            const htmlContent = quill.root.innerHTML;
+
+            // 4. Construct a JSON object for the server
+            const payload = {
+                htmlContent: htmlContent
+            };
+
+            // 5. Send the POST request to your Go server
+            try {
+                const response = await fetch('/save-article', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                // 6. Handle the server's response
+                const result = await response.json();
+                if (response.ok) {
+                    console.log('Article published successfully!', result);
+                    alert('Article published successfully!');
+                } else {
+                    console.error('Failed to publish article:', result.error);
+                    alert('Failed to publish article: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+                alert('A network error occurred.');
+            }
+        });
+    </script>
+</body>
+</html>
