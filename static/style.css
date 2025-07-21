@@ -1,0 +1,35 @@
+* {
+  font-family: "Lato", sans-serif;
+}
+body {
+  font-family: "Montserrat", sans-serif;
+  padding: 2rem;
+  background-color: #f0f2f5;
+  font-weight: 400;
+}
+md-card {
+  max-width: 800px;
+  margin: auto;
+  padding: 2rem;
+}
+md-filled-text-field,
+#editor {
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+#editor {
+  height: 300px;
+  font-family: "Lato", sans-serif;
+}
+.buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+md-outlined-button {
+    padding: 1rem;
+}
+md-outlined-text-field {
+    padding: 0.5rem;
+}
