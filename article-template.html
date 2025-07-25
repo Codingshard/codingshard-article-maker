@@ -1,0 +1,86 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--this Go verb will allow it to be used as a template-->
+    <title>%s</title>
+    <!-- Quill.js WYSIWYG editor, from CDN-->
+    <link
+      href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css"
+      rel="stylesheet"
+    />
+    <!-- Import fonts from Google Fonts: Montserrat for headings, Source Serif for text, and Ubuntu Mono-->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Highlight.js CSS for syntax highlighting in code blocks. Is meant to be automatic. -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
+    />
+
+    <!-- Highlight.js JavaScript for dynamically applying highlighting-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <style>
+
+      body {
+        font-family: "Source Serif 4", sans-serif;
+        padding: 2rem; /* Change the paddings */
+        background-color: #F8FFFB; /* a light mint-like color for the background of the article overlay */
+        font-weight: 400; /* ensure a decent font-weight */
+        line-height: 1.5; /* Good, readable line height */
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5 {
+        font-family: "Montserrat", sans-serif;
+        line-height: 1.3; /* The line height for headings should be smaller than that of text - because lower line heights pack more visual power */
+      }
+
+      .article-content {
+        max-width: 800px; /* the article is in an overlay */
+        margin: auto;
+        padding: 2rem;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      pre,
+      code,
+      pre > code,
+      .code {
+        font-family: "Ubuntu Mono", monospace;
+        border-radius: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="article-content">%s</div>
+
+    <!-- Initialize Highlight.js -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Find all <pre> tags that don't contain <code>
+        const preElements = document.querySelectorAll("pre");
+        preElements.forEach(function (pre) {
+          if (!pre.querySelector("code")) {
+            const code = document.createElement("code");
+            code.textContent = pre.textContent;
+            pre.innerHTML = "";
+            pre.appendChild(code);
+          }
+        });
+
+        // Now highlight all code blocks
+        hljs.highlightAll();
+      });
+    </script>
+  </body>
+</html>

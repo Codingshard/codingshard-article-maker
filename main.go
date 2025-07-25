@@ -1,29 +1,28 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"net/http"
-	"os"
-	"path/filepath"
-	"regexp" // Required for filename sanitization
-	"time"
+	"fmt"           //fmt for formatting
+	"log"           // log for logging and error debugging
+	"net/http"      // net/http for HTTP server and request handling
+	"os"            // os for file operations
+	"path/filepath" // path/filepath for file path manipulation
+	"regexp"        // Required for filename sanitization
+	"time"          // time for generating unique timestamps
 
-	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"           // Gin framework for building web applications
 	"github.com/microcosm-cc/bluemonday" // Recommended for HTML sanitization
 )
 
 // ArticleRequest defines the structure for the incoming JSON payload.
 type ArticleRequest struct {
-	HTMLContent string `json:"htmlContent"`
-	ArticleName string `json:"articleName"` // Field for the custom filename
+	HTMLContent string `json:"htmlContent"` // Field for the HTML content
+	ArticleName string `json:"articleName"` // Field for the custom filename (user input)
 }
 
 func main() {
-	router := gin.Default()
+	router := gin.Default() // Create Gin router instance
 
-	// Serve the static HTML file from the "static" directory (e.g., index.html)
-	// Access via http://localhost:8080/
+	// Serve the static HTML file from the "static" directory
 	router.StaticFile("/", "./static/index.html")
 	router.StaticFS("/static", http.Dir("./static"))
 
@@ -31,7 +30,7 @@ func main() {
 	// Access articles via http://localhost:8080/articles/your-article-name.html
 	router.StaticFS("/articles", http.Dir("./articles"))
 
-	// API endpoint to save the article
+	// API POST endpoint to save the article.R
 	router.POST("/save-article", saveArticleHandler)
 
 	// Start the server
@@ -93,36 +92,13 @@ func saveArticleHandler(c *gin.Context) {
 	filePath := filepath.Join(outputDir, filename)
 
 	// --- 4. Construct the complete HTML document for saving ---
-	fullHTMLContent := fmt.Sprintf(`<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>%s</title>
-    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Montserrat', sans-serif;
-            padding: 2rem;
-            background-color: #f0f2f5;
-        }
-        .article-content {
-            max-width: 800px;
-            margin: auto;
-            padding: 2rem;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-    </style>
-</head>
-<body>
-    <div class="article-content">
-        %s
-    </div>
-</body>
-</html>`, req.ArticleName, sanitizedHTMLContent) // Use original ArticleName for title, sanitized HTML for content
+	articleTemplate, err := os.ReadFile("article-template.html")
+	if err != nil {
+		log.Printf("file reading failed with error %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read article template"})
+		return
+	}
+	fullHTMLContent := fmt.Sprintf(string(articleTemplate), req.ArticleName, sanitizedHTMLContent) // Use original ArticleName for title, sanitized HTML for content
 
 	// --- 5. Write the HTML content to the file ---
 	if err := os.WriteFile(filePath, []byte(fullHTMLContent), 0644); err != nil { // 0644 for rw for owner, r for others

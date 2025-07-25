@@ -1,0 +1,7 @@
+.ql-snow .ql-editor .ql-code-block {
+  background-color: #202124;
+  border: 1px solid #4a5568;
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-family: 'Ubuntu Mono', 'Consolas', monospace;
+}
