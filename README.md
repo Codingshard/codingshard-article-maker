@@ -1,5 +1,6 @@
-# codingshard-article-maker
-This is a tool for article creation for codingshard.
-Registered Volunteers are permitted to use it to create the necessary articles.
-The Codingshard Article Maker is licensed under the BSD-3-Clause License.
-All contributors are expected to follow the code of conduct.
+# content-creation-toolkit
+
+Welcome to the repository of the Codingshard Content Creation Toolkit!
+This toolkit comprises two main tools: The Quiz Maker and the Article Maker.
+
+These tools are to be used by Codingshard volunteers.
